@@ -1,41 +1,57 @@
+const models = require("../database/models/index");
+
 module.exports = {
-  crear: async (req, res) => {
+  crear: async (req, res, next) => {
     try {
+      const paciente = await models.paciente.create(req.body);
+
+      const relacion = await models.paciente_medico.create({
+        pacienteId: paciente.id,
+        medicoId: req.body.medicoId,
+      });
+
       res.json({
-        message: "Alta de paciente",
+        success: true,
+        data: {
+          id: paciente.id,
+        },
       });
     } catch (err) {
-      console.log(err);
+      return next(err);
     }
   },
 
-  editar: async (req, res) => {
+  info: async (req, res, next) => {
     try {
+      const paciente = await models.paciente.findOne({
+        where: {
+          id: req.params.id,
+        },
+        include: [
+          {
+            model: models.paciente_medico,
+            include: [{ model: models.medico }],
+          },
+        ],
+      });
       res.json({
-        message: "Editar paciente",
+        success: true,
+        data: paciente,
       });
     } catch (err) {
-      console.log(err);
+      return next(err);
     }
   },
 
-  all: async (req, res) => {
+  all: async (req, res, next) => {
     try {
+      const pacientes = await models.paciente.findAll();
       res.json({
-        message: "Listar pacientes",
+        success: true,
+        data: pacientes,
       });
     } catch (err) {
-      console.log(err);
-    }
-  },
-
-  info: async (req, res) => {
-    try {
-      res.json({
-        message: "Información de un paciente",
-      });
-    } catch (err) {
-      console.log(err);
+      return next(err);
     }
   },
 };

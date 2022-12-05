@@ -3,7 +3,6 @@ const { Router } = require("express"); // importar express
 
 const medicoRoutes = require("./medico.routes");
 const pacienteRoutes = require("./paciente.routes");
-const tratamientoRoutes = require("./tratamiento.routes");
 
 const rutas_init = () => {
   // aca se ponen todas las rutas que existen
@@ -11,7 +10,6 @@ const rutas_init = () => {
 
   router.use("/paciente", pacienteRoutes);
   router.use("/medico", medicoRoutes);
-  router.use("/tratamiento", tratamientoRoutes); // para acceder a las rutas de usuarios de la api siempre deberá empezar con /usuarios
 
   return router; // retornar el router
 };

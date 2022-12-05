@@ -1,8 +1,8 @@
-// TIENE TODA LA CONFIGURACION DE LA API
-
-const express = require("express"); // importar express
-const routerConfig = require("./routes/index.routes.js"); // importar el archivo de rutas
-const globalConstants = require("./const/globalConstants.js"); // importar el archivo de constantes globales
+const express = require("express");
+let createError = require("http-errors");
+const routerConfig = require("./routes/index.routes.js");
+const globalConstants = require("./const/globalConstants.js");
+let errorHandler = require("./middlewares/error");
 
 const configuracionApi = (app) => {
   // configurar la api
@@ -13,17 +13,22 @@ const configuracionApi = (app) => {
 
 const configuracionRouter = (app) => {
   // configurar las rutas
-  app.use("/api/", routerConfig.rutas_init()); // para acceder a las rutas de la api siempre deberá empezar con /api/
+  app.use("/api/", routerConfig.rutas_init());
+
+  app.use(function (req, res, next) {
+    next(createError(404)); // si no se encuentra la ruta, se envia un error 404
+  });
+  app.use(errorHandler); // configurar el middleware de manejo de errores
 };
 
 const init = () => {
-  const app = express(); // crear una instancia de express
+  const app = express();
   configuracionApi(app);
   configuracionRouter(app);
-  app.listen(globalConstants.PORT); // escuchar en el puerto
+  app.listen(globalConstants.PORT);
   console.log(
     "La aplicacion se está ejecutando en el puerto:" + globalConstants.PORT
-  ); // mostrar en consola que se está ejecutando la aplicación en el puerto correspondiente
+  );
 };
 
 init(); // iniciar la aplicación

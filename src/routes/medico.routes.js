@@ -1,9 +1,10 @@
 const router = require("express").Router();
 const medicoController = require("../controllers/medico.controller");
+const validate = require("../middlewares/validate");
+const schemeMedico = require("../middlewares/scheme/medico.scheme");
 
+router.post("/", validate(schemeMedico.crearMedico), medicoController.crear);
 router.get("/", medicoController.all);
-router.put("/:id", medicoController.editar);
-router.post("/:id", medicoController.crear);
 router.get("/:id", medicoController.info);
 
 module.exports = router;

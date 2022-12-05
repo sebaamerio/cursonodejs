@@ -1,41 +1,54 @@
+const models = require("../database/models/index");
+const errors = require("../const/errors");
+
 module.exports = {
-  crear: async (req, res) => {
+  crear: async (req, res, next) => {
     try {
+      const medico = await models.medico.create(req.body);
+      console.log(req.body);
       res.json({
-        message: "Alta de medico",
+        success: true,
+        data: {
+          id: medico.id,
+        },
       });
     } catch (err) {
-      console.log(err);
+      return next(err);
     }
   },
 
-  editar: async (req, res) => {
+  all: async (req, res, next) => {
     try {
+      const medicos = await models.medico.findAll();
       res.json({
-        message: "Modificar medico",
+        success: true,
+        data: medicos,
       });
     } catch (err) {
-      console.log(err);
+      return next(err);
     }
   },
 
-  all: async (req, res) => {
+  info: async (req, res, next) => {
     try {
+      const medico = await models.medico.findOne({
+        where: {
+          id: req.params.id,
+        },
+        include: [
+          {
+            model: models.paciente_medico,
+            include: [{ model: models.paciente }],
+          },
+        ],
+      });
+      if (!medico) return next(errors.MedicoInexistente);
       res.json({
-        message: "Lista de medicos",
+        success: true,
+        data: medico,
       });
     } catch (err) {
-      console.log(err);
-    }
-  },
-
-  info: async (req, res) => {
-    try {
-      res.json({
-        message: "Información de un medico",
-      });
-    } catch (err) {
-      console.log(err);
+      return next(err);
     }
   },
 };
