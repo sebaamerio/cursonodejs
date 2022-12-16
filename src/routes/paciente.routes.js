@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const pacienteController = require("../controllers/paciente.controller");
 const validate = require("../middlewares/validate");
-const schemePaciente = require("../middlewares/scheme/paciente.scheme");
+const schemePaciente = require("../middlewares/schemes/paciente.scheme");
 
 router.post(
   "/",
